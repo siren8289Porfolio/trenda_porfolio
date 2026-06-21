@@ -1,12 +1,11 @@
 package com.example.service.playrecord.controller;
 
 import com.example.service.common.response.ApiResponse;
-import com.example.service.playrecord.entity.PlayRecord;
+import com.example.service.playrecord.dto.PlayRecordCreateRequest;
+import com.example.service.playrecord.dto.PlayRecordResponse;
 import com.example.service.playrecord.service.PlayRecordService;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.Valid;
 import java.util.List;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/play/records")
-@Validated
 public class PlayRecordController {
 
     private final PlayRecordService playRecordService;
@@ -26,17 +24,12 @@ public class PlayRecordController {
     }
 
     @GetMapping("/user/{userId}")
-    public ApiResponse<List<PlayRecord>> findByUser(@PathVariable Long userId) {
+    public ApiResponse<List<PlayRecordResponse>> findByUser(@PathVariable Long userId) {
         return ApiResponse.success(playRecordService.findByUser(userId));
     }
 
     @PostMapping
-    public ApiResponse<PlayRecord> record(@RequestBody @Validated PlayRecordRequest request) {
-        return ApiResponse.success(
-                playRecordService.recordPlay(request.userId(), request.gameId(), request.score()));
+    public ApiResponse<PlayRecordResponse> record(@RequestBody @Valid PlayRecordCreateRequest request) {
+        return ApiResponse.success(playRecordService.recordPlay(request));
     }
-
-    public record PlayRecordRequest(
-            @NotNull Long userId, @NotNull Long gameId, @NotNull @Min(0) Integer score) {}
 }
-

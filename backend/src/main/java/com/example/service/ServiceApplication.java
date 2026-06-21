@@ -109,4 +109,3 @@ public class ServiceApplication {
         System.setProperty("spring.jpa.database-platform", "org.hibernate.dialect.PostgreSQLDialect");
     }
 }
-

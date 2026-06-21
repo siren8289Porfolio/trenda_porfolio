@@ -1,11 +1,8 @@
 package com.example.service.profile.dto;
 
 import com.example.service.playrecord.dto.PlayRecordResponse;
-import com.example.service.playrecord.entity.PlayRecord;
 import com.example.service.portfolio.dto.PortfolioResponse;
-import com.example.service.portfolio.entity.Portfolio;
 import com.example.service.roadmap.dto.RoadmapResponse;
-import com.example.service.roadmap.entity.Roadmap;
 import com.example.service.user.dto.UserResponse;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -30,15 +27,14 @@ public class ProfileResponse {
     /** 여러 도메인 조회 결과를 하나의 응답 DTO로 조합. */
     public static ProfileResponse from(
             UserResponse user,
-            List<PlayRecord> playRecords,
-            List<Portfolio> portfolios,
-            List<Roadmap> roadmaps) {
+            List<PlayRecordResponse> playRecords,
+            List<PortfolioResponse> portfolios,
+            List<RoadmapResponse> roadmaps) {
         return ProfileResponse.builder()
                 .user(user)
-                .playRecords(playRecords == null ? List.of() : playRecords.stream().map(PlayRecordResponse::from).toList())
-                .portfolios(portfolios == null ? List.of() : portfolios.stream().map(PortfolioResponse::from).toList())
-                .roadmaps(roadmaps == null ? List.of() : roadmaps.stream().map(RoadmapResponse::from).toList())
+                .playRecords(playRecords == null ? List.of() : playRecords)
+                .portfolios(portfolios == null ? List.of() : portfolios)
+                .roadmaps(roadmaps == null ? List.of() : roadmaps)
                 .build();
     }
 }
-

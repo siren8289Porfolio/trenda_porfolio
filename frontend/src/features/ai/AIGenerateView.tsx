@@ -1,18 +1,46 @@
 import { useState } from "react";
 import { motion } from "motion/react";
 import { Sparkles, ArrowLeft } from "lucide-react";
+import { apiClient } from "@/shared/api/client";
 
 interface AIGenerateViewProps {
   onNavigate: (page: string) => void;
 }
 
+interface AiDesignResponse {
+  title: string;
+  summary: string;
+  sections: string[];
+  components: string[];
+  palette: string[];
+  nextSteps: string[];
+}
+
 export function AIGenerateView({ onNavigate }: AIGenerateViewProps) {
   const [prompt, setPrompt] = useState("");
   const [generating, setGenerating] = useState(false);
+  const [result, setResult] = useState<AiDesignResponse | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleGenerate = () => {
+  const handleGenerate = async () => {
+    if (!prompt.trim()) return;
     setGenerating(true);
-    setTimeout(() => setGenerating(false), 2000);
+    setError(null);
+
+    try {
+      const data = await apiClient.post<AiDesignResponse>("/api/ai/design", {
+        body: {
+          prompt: prompt.trim(),
+          audience: "디자인/개발 전공자",
+          tone: "실용적이고 선명한",
+        },
+      });
+      setResult(data);
+    } catch {
+      setError("AI 디자인 생성에 실패했습니다. 백엔드 서버가 켜져 있는지 확인해주세요.");
+    } finally {
+      setGenerating(false);
+    }
   };
 
   return (
@@ -60,13 +88,79 @@ export function AIGenerateView({ onNavigate }: AIGenerateViewProps) {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={handleGenerate}
-            disabled={!prompt || generating}
+            disabled={!prompt.trim() || generating}
             className="w-full py-4 rounded-xl text-white text-lg disabled:opacity-50"
             style={{ backgroundColor: "#1CB0F6" }}
           >
             {generating ? "생성 중..." : "AI로 디자인 생성하기"}
           </motion.button>
+
+          {error && (
+            <p className="mt-4 text-sm text-red-500">{error}</p>
+          )}
         </motion.div>
+
+        {result && (
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mt-8 bg-white rounded-2xl shadow-lg p-8 border border-blue-100"
+          >
+            <div className="mb-6">
+              <p className="text-sm font-bold text-[#1CB0F6] mb-2">Generated Design Brief</p>
+              <h2 className="text-2xl font-bold text-gray-900 mb-3">{result.title}</h2>
+              <p className="text-gray-600 leading-relaxed">{result.summary}</p>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              <section>
+                <h3 className="font-bold text-gray-900 mb-3">화면 구성</h3>
+                <div className="space-y-2">
+                  {result.sections.map((section) => (
+                    <p key={section} className="rounded-xl bg-blue-50 px-4 py-3 text-sm text-gray-700">
+                      {section}
+                    </p>
+                  ))}
+                </div>
+              </section>
+
+              <section>
+                <h3 className="font-bold text-gray-900 mb-3">추천 컴포넌트</h3>
+                <div className="flex flex-wrap gap-2">
+                  {result.components.map((component) => (
+                    <span key={component} className="rounded-full bg-gray-100 px-3 py-2 text-sm font-medium text-gray-700">
+                      {component}
+                    </span>
+                  ))}
+                </div>
+              </section>
+            </div>
+
+            <div className="mt-6">
+              <h3 className="font-bold text-gray-900 mb-3">컬러 팔레트</h3>
+              <div className="flex flex-wrap gap-3">
+                {result.palette.map((color) => (
+                  <div key={color} className="flex items-center gap-2 rounded-xl border border-gray-100 px-3 py-2">
+                    <span className="h-6 w-6 rounded-full border border-black/10" style={{ backgroundColor: color }} />
+                    <span className="text-sm font-medium text-gray-700">{color}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-6">
+              <h3 className="font-bold text-gray-900 mb-3">다음 작업</h3>
+              <ol className="space-y-2">
+                {result.nextSteps.map((step, index) => (
+                  <li key={step} className="flex gap-3 text-sm text-gray-700">
+                    <span className="font-bold text-[#1CB0F6]">{index + 1}</span>
+                    {step}
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </motion.div>
+        )}
       </div>
     </div>
   );

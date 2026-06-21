@@ -1,7 +1,8 @@
 package com.example.service.question.controller;
 
 import com.example.service.common.response.ApiResponse;
-import com.example.service.question.entity.Question;
+import com.example.service.question.dto.QuestionCreateRequest;
+import com.example.service.question.dto.QuestionResponse;
 import com.example.service.question.service.QuestionService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -23,13 +24,12 @@ public class QuestionController {
     }
 
     @GetMapping("/game/{gameId}")
-    public ApiResponse<List<Question>> findByGame(@PathVariable Long gameId) {
+    public ApiResponse<List<QuestionResponse>> findByGame(@PathVariable Long gameId) {
         return ApiResponse.success(questionService.findByGame(gameId));
     }
 
     @PostMapping
-    public ApiResponse<Question> create(@Valid @RequestBody Question question) {
-        return ApiResponse.success(questionService.save(question));
+    public ApiResponse<QuestionResponse> create(@Valid @RequestBody QuestionCreateRequest request) {
+        return ApiResponse.success(questionService.save(request));
     }
 }
-

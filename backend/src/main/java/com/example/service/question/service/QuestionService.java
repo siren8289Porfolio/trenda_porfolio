@@ -1,5 +1,9 @@
 package com.example.service.question.service;
 
+import com.example.service.game.entity.Game;
+import com.example.service.game.service.GameService;
+import com.example.service.question.dto.QuestionCreateRequest;
+import com.example.service.question.dto.QuestionResponse;
 import com.example.service.question.entity.Question;
 import com.example.service.question.repository.QuestionRepository;
 import java.util.List;
@@ -11,18 +15,29 @@ import org.springframework.transaction.annotation.Transactional;
 public class QuestionService {
 
     private final QuestionRepository questionRepository;
+    private final GameService gameService;
 
-    public QuestionService(QuestionRepository questionRepository) {
+    public QuestionService(QuestionRepository questionRepository, GameService gameService) {
         this.questionRepository = questionRepository;
+        this.gameService = gameService;
     }
 
-    public List<Question> findByGame(Long gameId) {
-        return questionRepository.findByGameId(gameId);
+    public List<QuestionResponse> findByGame(Long gameId) {
+        return questionRepository.findByGameId(gameId)
+                .stream()
+                .map(QuestionResponse::from)
+                .toList();
     }
 
     @Transactional
-    public Question save(Question question) {
-        return questionRepository.save(question);
+    public QuestionResponse save(QuestionCreateRequest request) {
+        Game game = gameService.findById(request.getGameId());
+        Question question = Question.builder()
+                .game(game)
+                .content(request.getContent().trim())
+                .answer(request.getAnswer())
+                .difficulty(request.getDifficulty())
+                .build();
+        return QuestionResponse.from(questionRepository.save(question));
     }
 }
-

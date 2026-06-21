@@ -1,11 +1,11 @@
 package com.example.service.profile.service;
 
-import com.example.service.playrecord.entity.PlayRecord;
+import com.example.service.playrecord.dto.PlayRecordResponse;
 import com.example.service.playrecord.service.PlayRecordService;
-import com.example.service.portfolio.entity.Portfolio;
+import com.example.service.portfolio.dto.PortfolioResponse;
 import com.example.service.portfolio.service.PortfolioService;
 import com.example.service.profile.dto.ProfileResponse;
-import com.example.service.roadmap.entity.Roadmap;
+import com.example.service.roadmap.dto.RoadmapResponse;
 import com.example.service.roadmap.service.RoadmapService;
 import com.example.service.user.dto.UserResponse;
 import com.example.service.user.service.UserService;
@@ -37,10 +37,9 @@ public class ProfileService {
     /** 사용자 프로필 화면용 통합 조회. Entity가 아닌 ProfileResponse로 반환. */
     public ProfileResponse getProfile(Long userId) {
         UserResponse user = userService.getById(userId);
-        List<PlayRecord> playRecords = playRecordService.findByUser(userId);
-        List<Portfolio> portfolios = portfolioService.findByUser(userId);
-        List<Roadmap> roadmaps = roadmapService.getUserRoadmaps(userId);
+        List<PlayRecordResponse> playRecords = playRecordService.findByUser(userId);
+        List<PortfolioResponse> portfolios = portfolioService.findByUser(userId);
+        List<RoadmapResponse> roadmaps = roadmapService.getUserRoadmaps(userId);
         return ProfileResponse.from(user, playRecords, portfolios, roadmaps);
     }
 }
-

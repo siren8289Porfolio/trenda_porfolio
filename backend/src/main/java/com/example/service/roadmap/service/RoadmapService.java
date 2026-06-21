@@ -1,5 +1,7 @@
 package com.example.service.roadmap.service;
 
+import com.example.service.roadmap.dto.RoadmapCreateRequest;
+import com.example.service.roadmap.dto.RoadmapResponse;
 import com.example.service.roadmap.entity.Roadmap;
 import com.example.service.roadmap.repository.RoadmapRepository;
 import java.util.List;
@@ -12,13 +14,19 @@ public class RoadmapService {
 
     private final RoadmapRepository roadmapRepository;
 
-    public List<Roadmap> getUserRoadmaps(Long userId) {
-        return roadmapRepository.findByUserId(userId);
+    public List<RoadmapResponse> getUserRoadmaps(Long userId) {
+        return roadmapRepository.findByUserId(userId)
+                .stream()
+                .map(RoadmapResponse::from)
+                .toList();
     }
 
-    public Roadmap createRoadmap(Long userId, String title, String content) {
-        Roadmap roadmap = new Roadmap(userId, title, content);
-        return roadmapRepository.save(roadmap);
+    public RoadmapResponse createRoadmap(RoadmapCreateRequest request) {
+        Roadmap roadmap = new Roadmap(
+                request.getUserId(),
+                request.getTitle().trim(),
+                request.getContent().trim()
+        );
+        return RoadmapResponse.from(roadmapRepository.save(roadmap));
     }
 }
-

@@ -2,6 +2,8 @@ package com.example.service.playrecord.service;
 
 import com.example.service.game.entity.Game;
 import com.example.service.game.service.GameService;
+import com.example.service.playrecord.dto.PlayRecordCreateRequest;
+import com.example.service.playrecord.dto.PlayRecordResponse;
 import com.example.service.playrecord.entity.PlayRecord;
 import com.example.service.playrecord.repository.PlayRecordRepository;
 import com.example.service.user.entity.User;
@@ -27,22 +29,24 @@ public class PlayRecordService {
         this.gameService = gameService;
     }
 
-    public List<PlayRecord> findByUser(Long userId) {
-        return playRecordRepository.findByUserId(userId);
+    public List<PlayRecordResponse> findByUser(Long userId) {
+        return playRecordRepository.findByUserId(userId)
+                .stream()
+                .map(PlayRecordResponse::from)
+                .toList();
     }
 
     @Transactional
-    public PlayRecord recordPlay(Long userId, Long gameId, Integer score) {
-        User user = userService.getUserEntity(userId);
-        Game game = gameService.findById(gameId);
+    public PlayRecordResponse recordPlay(PlayRecordCreateRequest request) {
+        User user = userService.getUserEntity(request.getUserId());
+        Game game = gameService.findById(request.getGameId());
 
         PlayRecord record = PlayRecord.builder()
                 .user(user)
                 .game(game)
-                .score(score)
+                .score(request.getScore())
                 .build();
 
-        return playRecordRepository.save(record);
+        return PlayRecordResponse.from(playRecordRepository.save(record));
     }
 }
-

@@ -17,6 +17,7 @@ public class RoadmapResponse {
     private Long id;
     private Long userId;
     private String title;
+    private String content;
     private String stepContent;
 
     public static RoadmapResponse from(Roadmap roadmap) {
@@ -27,8 +28,8 @@ public class RoadmapResponse {
                 .id(roadmap.getId())
                 .userId(roadmap.getUserId())
                 .title(roadmap.getTitle())
+                .content(roadmap.getStepContent())
                 .stepContent(roadmap.getStepContent())
                 .build();
     }
 }
-
