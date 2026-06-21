@@ -4,6 +4,7 @@ import com.example.service.common.exception.CustomException;
 import com.example.service.user.dto.UserCreateRequest;
 import com.example.service.user.dto.UserResponse;
 import com.example.service.user.dto.UserSearchRequest;
+import com.example.service.user.dto.UserUpdateRequest;
 import com.example.service.user.entity.User;
 import com.example.service.user.repository.UserRepository;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -51,6 +52,19 @@ public class UserService {
     public UserResponse getById(Long id) {
         User user = getUserEntity(id);
         return UserResponse.from(user);
+    }
+
+    @Transactional
+    public UserResponse update(Long id, UserUpdateRequest request) {
+        User user = getUserEntity(id);
+        user.changeDisplayName(request.normalizedDisplayName());
+        return UserResponse.from(user);
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        User user = getUserEntity(id);
+        userRepository.delete(user);
     }
 
     /** 같은 애플리케이션 내 다른 서비스에서 User 엔티티가 필요할 때만 사용. API는 getById 사용. */

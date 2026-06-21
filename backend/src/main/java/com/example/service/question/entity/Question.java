@@ -43,5 +43,10 @@ public class Question {
 
     @Column(length = 30)
     private String difficulty;
-}
 
+    public void update(String content, String answer, String difficulty) {
+        this.content = content;
+        this.answer = answer;
+        this.difficulty = difficulty;
+    }
+}

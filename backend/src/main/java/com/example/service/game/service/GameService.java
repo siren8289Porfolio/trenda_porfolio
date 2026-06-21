@@ -3,6 +3,7 @@ package com.example.service.game.service;
 import com.example.service.common.exception.CustomException;
 import com.example.service.game.dto.GameCreateRequest;
 import com.example.service.game.dto.GameResponse;
+import com.example.service.game.dto.GameUpdateRequest;
 import com.example.service.game.entity.Game;
 import com.example.service.game.repository.GameRepository;
 import org.springframework.data.domain.Page;
@@ -36,6 +37,10 @@ public class GameService {
                 .orElseThrow(() -> new CustomException("Game not found", HttpStatus.NOT_FOUND));
     }
 
+    public GameResponse getById(Long id) {
+        return GameResponse.from(findById(id));
+    }
+
     /**
      * 게임 생성.
      * - Controller 에서는 DTO만 받고,
@@ -49,5 +54,16 @@ public class GameService {
         );
         return GameResponse.from(gameRepository.save(game));
     }
-}
 
+    @Transactional
+    public GameResponse update(Long id, GameUpdateRequest request) {
+        Game game = findById(id);
+        game.update(request.normalizedTitle(), request.normalizedDescription());
+        return GameResponse.from(game);
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        gameRepository.delete(findById(id));
+    }
+}

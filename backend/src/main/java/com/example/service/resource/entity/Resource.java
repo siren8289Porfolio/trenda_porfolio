@@ -27,5 +27,11 @@ public class Resource {
         this.category = category;
         this.description = description;
     }
-}
 
+    public void update(String title, String url, String category, String description) {
+        this.title = title;
+        this.url = url;
+        this.category = category;
+        this.description = description;
+    }
+}

@@ -25,5 +25,9 @@ public class Roadmap {
         this.title = title;
         this.stepContent = stepContent;
     }
-}
 
+    public void update(String title, String stepContent) {
+        this.title = title;
+        this.stepContent = stepContent;
+    }
+}

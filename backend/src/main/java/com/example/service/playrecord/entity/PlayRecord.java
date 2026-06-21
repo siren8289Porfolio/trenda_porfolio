@@ -50,5 +50,8 @@ public class PlayRecord {
     void onCreate() {
         playedAt = Instant.now();
     }
-}
 
+    public void updateScore(Integer score) {
+        this.score = score;
+    }
+}

@@ -32,6 +32,11 @@ public class UserController {
         return ApiResponse.success(userService.search(condition));
     }
 
+    @GetMapping("/{id}")
+    public ApiResponse<UserResponse> findById(@PathVariable Long id) {
+        return ApiResponse.success(userService.getById(id));
+    }
+
     // [0] 201 CREATED + ResponseEntity 적용 (리뷰 반영)
     @PostMapping
     public ResponseEntity<ApiResponse<UserResponse>> create(
@@ -41,5 +46,19 @@ public class UserController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(ApiResponse.success(response));
+    }
+
+    @PatchMapping("/{id}")
+    public ApiResponse<UserResponse> update(
+            @PathVariable Long id,
+            @Valid @RequestBody UserUpdateRequest request
+    ) {
+        return ApiResponse.success(userService.update(id, request));
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id) {
+        userService.delete(id);
     }
 }
