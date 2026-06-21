@@ -6,3 +6,4 @@ out
 *.md
 env.sample
 Dockerfile
+docker-compose*.yml
