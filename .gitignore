@@ -16,11 +16,21 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+.npm/
+.pnpm-store/
+.yarn/cache/
+.yarn/unplugged/
+.yarn/build-state.yml
 .next/
+.nuxt/
+.svelte-kit/
+.vite/
 out/
 dist/
 build/
 *.tsbuildinfo
+coverage/
+.nyc_output/
 
 # Java
 *.class
@@ -35,7 +45,7 @@ build/
 build/
 !frontend/src/features/build/
 !frontend/src/features/build/**
-!gradle/wrapper/gradle-wrapper.jar
+!**/gradle/wrapper/gradle-wrapper.jar
 bin/
 target/
 .settings/
@@ -60,12 +70,17 @@ application-local.properties
 logs/
 *.log
 
-# Test
-coverage/
-.nyc_output/
-
 # Misc
 *.pid
 *.seed
 *.pid.lock
 
+# Large local assets
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.psd
+*.ai
+*.sketch
+*.fig
